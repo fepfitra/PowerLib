@@ -1,23 +1,20 @@
 /* eslint-disable no-console */
+
 const Hapi = require('@hapi/hapi');
-const route = require('./routes');
-
-const server = new Hapi.Server();
-server.connection({
-  host: process.env.NODE_ENV !== 'production' ? 'localhost' : '0.0.0.0',
-  port: 5000,
-  routes: {
-    cors: {
-      origin: ['*'],
-    },
-  },
-});
-
-server.route(route);
 
 const init = async () => {
+  const server = Hapi.server({
+    port: 5000,
+    host: 'localhost',
+  });
+
   await server.start();
-  console.log(`Server running at: ${server.info.uri}`);
+  console.log('Server running on %s', server.info.uri);
 };
+
+process.on('unhandledRejection', (err) => {
+  console.log(err);
+  process.exit(1);
+});
 
 init();
